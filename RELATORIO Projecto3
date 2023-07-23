@@ -1,0 +1,29 @@
+                      Relatório - Projeto 3
+                                       Introdução:
+Este relatório descreve o desenvolvimento de um cliente TFTP (Trivial File Transfer Protocol). O cliente TFTP foi implementado utilizando a linguagem de programação Python e é capaz de realizar duas operações principais: obter (get) e enviar (put) ficheiros para um servidor TFTP remoto. O projeto foi desenvolvido com o objetivo de oferecer uma interface interativa e não interativa para o utilizador.
+
+
+     1.O desenvolvimento do cliente TFTP envolveu a criação de dois ficheiros: tftp.py e cliente.py.
+
+    1.1 Arquivo tftp.py: Este módulo é responsável por lidar com todas as funcionalidades relacionadas ao protocolo TFTP. Ele contém constantes e tipos importantes, como o tamanho máximo de dados, número máximo de bloco, e os opcodes para diferentes tipos de pacotes (RRQ, WRQ, DAT, ACK e ERR). Além disso, o módulo inclui funções para empacotar e desempacotar os diferentes pacotes do TFTP, como RRQ, WRQ, DAT, ACK e ERR. Também são definidas as exceções personalizadas, como NetworkError, ProtocolError e Err, para tratamento de erros específicos do protocolo.
+   
+    2 OS arquivos e o desenvolvimento
+
+    2.1 Arquivo cliente.py: Este ficheiro implementa o cliente TFTP, fornecendo duas formas de interação: interativa e não interativa. O cliente não interativo é acionado a partir da linha de comandos e recebe argumentos específicos para executar as operações e  com o servidor TFTP. O cliente interativo, por outro lado, solicita ao utilizador que introduza as informações necessárias para realizar as operações get ou put com o servidor TFTP. Em ambos os casos, o cliente utiliza a classe TFTPClient do módulo tftp.py para realizar as operações TFTP.
+
+    3.Funcionalidades Principais:
+
+    3.1. Operação Get (Obter Ficheiro): O cliente TFTP pode obter um ficheiro do servidor remoto utilizando a operação get. Ele envia uma requisição RRQ (Read Request) para o servidor e recebe blocos de dados através de pacotes DAT (Data Transfer) até que o ficheiro completo seja transferido. O cliente escreve os dados recebidos em um ficheiro local com o mesmo nome do ficheiro remoto, a menos que um nome de destino seja especificado.
+    2. Operação Put (Enviar Ficheiro): O cliente TFTP pode enviar um ficheiro para o servidor remoto utilizando a operação put. Ele envia uma requisição WRQ (Write Request) para o servidor e envia blocos de dados em pacotes DAT (Data Transfer) até que todo o ficheiro seja transferido. O cliente lê o ficheiro local e envia os dados ao servidor, que grava o ficheiro no seu sistema de ficheiros.
+
+   4.Utilização do Cliente:
+O cliente TFTP oferece duas formas de utilização:
+
+    4.1. Cliente TFTP Interativo: Ao executar o ficheiro cliente.py sem argumentos na linha de comandos, o cliente entra no modo interativo. O utilizador é solicitado a introduzir o endereço do servidor TFTP, o modo (get ou put), o nome do ficheiro no servidor (ficheiro remoto) e, opcionalmente, o nome do ficheiro local (ficheiro destino). O cliente TFTP então realiza a operação selecionada, exibindo mensagens de sucesso ou erro conforme apropriado.
+   4.2. Cliente TFTP Não Interativo: O cliente não interativo é utilizado através da linha de comandos, fornecendo os argumentos necessários para realizar as operações get ou put com o servidor TFTP. A sintaxe para o cliente não interativo é a seguinte:
+        ◦ Para obter um ficheiro: python3 cliente.py get [-p serv_port] server remote_file [local_file]
+        ◦ Para enviar um ficheiro: python3 cliente.py put [-p serv_port] server local_file [remote_file]
+
+                                                        Conclusão:
+O cliente TFTP desenvolvido é uma ferramenta funcional para transferir ficheiros entre um cliente e um servidor TFTP remoto. Com suporte para operações de obtenção (get) e envio (put) de ficheiros, o cliente oferece flexibilidade e conveniência tanto para utilizadores que preferem uma interação interativa como para utilizadores que desejam realizar operações diretamente através da linha de comandos. O projeto foi desenvolvido com base no protocolo TFTP e proporciona uma experiência de utilização simples e eficaz para a transferência de ficheiros em redes de computadores.
+
