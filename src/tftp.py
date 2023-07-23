@@ -2,7 +2,7 @@
 This module handles all TFTP related "stuff": data structures, packet 
 definitions, methods and protocol operations.
 
-(C) João Galamba, 2023
+(C) João Galamba, 2023 (Leila Cuber)
 """
 
 import ipaddress
@@ -332,3 +332,56 @@ def is_ascii_printable(txt: str) -> bool:
     return set(txt).issubset(string.printable)
     # ALTERNATIVA: return not set(txt) - set(string.printable)
 #:
+def put_file(server_addr: INET4Address, local_filename: str, remote_filename: str):
+    """
+    Put the local file given by `local_filename` to a TFTP server at `server_addr`
+    with the remote filename `remote_filename` using a TFTP WRQ connection.
+    """
+    with socket(AF_INET, SOCK_DGRAM) as sock:
+        sock.settimeout(INACTIVITY_TIMEOUT)
+        with open(local_filename, 'rb') as file:
+            wrq = pack_wrq(remote_filename)
+            sock.sendto(wrq, server_addr)
+            
+            next_block_number = 1
+            while True:
+                data = file.read(MAX_DATA_LEN)
+                if not data:
+                    # We reached the end of the file, exit the loop
+                    break
+
+                dat = pack_dat(next_block_number, data)
+                
+                # Send the data packet and wait for ACK
+                while True:
+                    sock.sendto(dat, server_addr)
+                    try:
+                        packet, server_addr = sock.recvfrom(DEFAULT_BUFFER_SIZE)
+                        opcode = unpack_opcode(packet)
+
+                        if opcode == ACK:
+                            block_number = unpack_ack(packet)
+                            if block_number == next_block_number:
+                                next_block_number += 1
+                                break
+                            else:
+                                # Discard duplicate ACKs and wait for the correct ACK
+                                continue
+                        elif opcode == ERR:
+                            error_code, error_msg = unpack_err(packet)
+                            raise Err(error_code, error_msg)
+                        else:
+                            raise ProtocolError(f'Invalid opcode: {opcode}')
+                    except socket.timeout:
+                        print(f"Retrying block {next_block_number}...")
+                
+    # File upload completed successfully
+    print(f"File '{local_filename}' uploaded to '{remote_filename}' on {server_addr}.")
+
+
+def main():
+    # Coloque aqui um código de exemplo para testar as funções
+    pass
+
+if __name__ == '__main__':
+    main()
